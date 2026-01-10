@@ -40,14 +40,22 @@ app.use((req, res, next) => {
 });
 
 // Маршрут
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Hello, World!' });
+app.get('/notes', (req, res) => {
+  res.status(200).json({ "message": "Retrieved all notes"});
 });
-// Маршрут для тестування middleware помилки
+
+app.get('/notes/:noteId', (req, res) => {
+  const { noteId } = req.params;
+  res.status(200).json({ id: noteId, message: `Retrieved note with ID: ${noteId}` });
+});
+
+
 app.get('/test-error', (req, res) => {
   // Штучна помилка для прикладу
-  throw new Error('Something went wrong');
+  throw new Error('Simulated server error');
 });
+
+
 
 // Middleware 404 (після всіх маршрутів)
 app.use((req, res) => {
@@ -61,26 +69,23 @@ app.post('/users', (req, res) => {
   res.status(201).json({ message: 'User created' });
 });
 
-
-// Middleware для обробки помилок
-// src/server.js
-
-// Решта коду файла
-
-// Middleware для обробки помилок
+// Маршрут для тестування middleware помилки
+app.get('/test-error', (req, res) => {
+  // Штучна помилка для прикладу
+  throw new Error('Something went wrong');
+});
+// Глобальний обробник помилок
 app.use((err, req, res, next) => {
-  console.error(err);
-
-  const isProd = process.env.NODE_ENV === "production";
-
+  console.error('Error:', err.message);
   res.status(500).json({
-    message: isProd
-      ? "Something went wrong. Please try again later."
-      : err.message,
+    message: 'Internal Server Error',
+    error: err.message,
   });
 });
 
-// Решта коду файла
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
