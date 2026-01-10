@@ -36,10 +36,13 @@ app.get('/notes/:noteId', (req, res) => {
   const { noteId } = req.params;
   res
     .status(200)
-    .json({ id: noteId, message: "Retrieved note with ID:" });
+    .json({message: `Retrieved note with ID: ${noteId}` });
 });
 
-
+app.get('/test-error', (req, res) => {
+  // Штучна помилка для прикладу
+  throw new Error('Simulated server error');
+});
 
 // Middleware 404 (після всіх маршрутів)
 app.use((req, res) => {
