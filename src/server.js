@@ -3,6 +3,7 @@ import cors from 'cors';
 import pino from 'pino-http';
 import 'dotenv/config';
 import helmet from 'helmet';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,53 +22,32 @@ app.use(
         ignore: 'pid,hostname',
         messageFormat:
           '{req.method} {req.url} {res.statusCode} - {responseTime}ms',
-        hideObject: true,
       },
     },
   }),
 );
 
-// Маршрут
+// Routes
 app.get('/notes', (req, res) => {
   res.status(200).json({ message: 'Retrieved all notes' });
 });
 
 app.get('/notes/:noteId', (req, res) => {
-  const { noteId } = req.params;
-  res
-    .status(200)
-    .json({ id: noteId, message: `Retrieved note with ID: ${noteId}` });
+  res.status(200).json({ message: 'Retrieved note by id' });
 });
 
 app.get('/test-error', (req, res) => {
-  // Штучна помилка для прикладу
   throw new Error('Simulated server error');
 });
 
-// Middleware 404 (після всіх маршрутів)
+// 404 handler (after routes)
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
-// Middleware для парсингу JSON
-app.use(express.json());
 
-app.post('/users', (req, res) => {
-  console.log(req.body); // тепер тіло доступне як JS-об’єкт
-  res.status(201).json({ message: 'User created' });
-});
-
-// Маршрут для тестування middleware помилки
-app.get('/test-error', (req, res) => {
-  // Штучна помилка для прикладу
-  throw new Error('Something went wrong');
-});
-// Глобальний обробник помилок
+// Error handler (last)
 app.use((err, req, res, next) => {
-  console.error('Error:', err.message);
-  res.status(500).json({
-    message: 'Internal Server Error',
-    error: err.message,
-  });
+  res.status(500).json({ message: 'Internal Server Error' });
 });
 
 app.listen(PORT, () => {
