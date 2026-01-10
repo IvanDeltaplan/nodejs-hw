@@ -37,12 +37,6 @@ app.get('/notes/:noteId', (req, res) => {
   res.status(200).json({ message: `Retrieved note with ID: ${noteId}` });
 });
 
-// Middleware 404 (після всіх маршрутів)
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-// Middleware для парсингу JSON
-
 // Маршрут для тестування middleware помилки
 app.get('/test-error', (req, res) => {
   // Штучна помилка для прикладу
@@ -55,6 +49,10 @@ app.use((err, req, res, next) => {
     message: 'Internal Server Error',
     error: err.message,
   });
+});
+// Middleware 404 (після всіх маршрутів)
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
 app.listen(PORT, () => {
