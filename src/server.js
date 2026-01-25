@@ -10,6 +10,7 @@ import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import notesRoutes from './routes/notesRoutes.js';
+import { errors } from "celebrate";
 
 // Підключення до MongoDB
 await connectMongoDB();
@@ -65,6 +66,7 @@ app.use(cors());         // 3. Дозвіл для запитів з інших 
 // });
 
 app.use(notesRoutes);
+app.use(errors());
 
 // Middleware 404 (після всіх маршрутів)
 app.use(notFoundHandler);

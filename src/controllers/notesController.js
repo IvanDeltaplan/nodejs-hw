@@ -5,8 +5,32 @@ import { Note } from '../models/note.js';
 
 // Отримати список усіх нотаток
 export const getAllNotes = async (req, res) => {
-  const notes = await Note.find();
-  res.status(200).json(notes);
+  const { page = 1, perPage = 10, search, tag } = req.query;
+  const skip = (page - 1) * perPage;
+
+  const notesQuery = Note.find();
+
+  if (tag) {
+    notesQuery.where("tag").equals(tag);
+  }
+  if (search) {
+    notesQuery.where({ $text: { $search: search } });
+  }
+
+
+
+  const [totalItems, notes] = await Promise.all([
+    notesQuery.clone().countDocuments(),
+    notesQuery.skip(skip).limit(perPage),
+  ]);
+
+  res.status(200).json({
+    totalItems,
+    page: Number(page),
+    perPage: Number(perPage),
+    totalPages: Math.ceil(totalItems / perPage),
+    notes,
+  });
 };
 
 // Отримати одну нотатку за id
