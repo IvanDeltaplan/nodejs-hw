@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
-import { getAllNotesSchema, noteIdSchema, createNoteSchema } from '../validations/notesValidation.js';
+import { getAllNotesSchema, noteIdSchema, createNoteSchema, updateNoteSchema } from '../validations/notesValidation.js';
 
 import {
 	getAllNotes,
@@ -23,7 +23,7 @@ router.post('/notes', celebrate(createNoteSchema), createNote);
 
 router.delete('/notes/:noteId', celebrate(noteIdSchema), deleteNote);
 
-router.patch('/notes/:noteId', celebrate(noteIdSchema), updateNote);
+router.patch('/notes/:noteId', celebrate(updateNoteSchema), updateNote);
 
 
 
