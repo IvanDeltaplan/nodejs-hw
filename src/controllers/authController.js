@@ -30,19 +30,23 @@ export const loginUser = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) {
-    throw createHttpError(401, "Invalid credetials");
+    throw createHttpError(401, "Invalid credentials");
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
-    throw createHttpError(401, "Invalid credetials");
+    throw createHttpError(401, "Invalid credentials");
   }
+
+  // ✅ удалить существующие сессии пользователя перед созданием новой
+  await Session.deleteMany({ userId: user._id });
 
   const newSession = await createSession(user._id);
   setSessionCookies(res, newSession);
 
   res.status(200).json(user);
 };
+
 
 export const logoutUser = async (req, res) => {
   const { sessionId } = req.cookies;
