@@ -13,6 +13,7 @@ import notesRoutes from './routes/notesRoutes.js';
 import { errors } from "celebrate";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import userRoutes from './routes/userRoutes.js';
 
 // Підключення до MongoDB
 await connectMongoDB();
@@ -34,7 +35,7 @@ app.use(cors({
 app.use(authRoutes);
 
 app.use(notesRoutes);
-
+app.use(userRoutes);
 app.use(errors());
 app.use(notFoundHandler);
 app.use(errorHandler);
